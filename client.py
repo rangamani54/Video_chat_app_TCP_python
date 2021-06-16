@@ -1,8 +1,6 @@
 import socket
 from threading import Thread
 import cv2
-import numpy as np
-from numpy.core.arrayprint import ComplexFloatingFormat
 import pickle
 import struct
 
@@ -16,7 +14,7 @@ client.connect(( serverip, int(serverport) ))
 print("Connected to the server")
 
 
-def listen():
+def receiving():
             if client:
                 data = b""
                 payload_size = struct.calcsize("Q")
@@ -41,7 +39,7 @@ def listen():
                 cv2.destroyAllWindows()
 
         
-t = Thread( target=listen )
+t = Thread( target=receiving )
 t.daemon = True
 t.start()
 

@@ -1,8 +1,6 @@
 import socket
 import threading
-import numpy as np
 import cv2
-import socketio
 import pickle
 import struct
 
@@ -10,7 +8,6 @@ import struct
 host_name = socket.gethostname()
 receiverip = socket.gethostbyname(host_name)
 receiverport = 4642
-st = "<sep>"
 client_socket = set()
 
 cap = cv2.VideoCapture(1)
@@ -25,7 +22,7 @@ print("Socket binded")
 server.listen(5)
 print("Socket listening at IP and Port: {}".format(socket_address))
 
-def listen(cs):
+def receiving_video(cs):
                 if server:
                     data = b""
                     payload_size = struct.calcsize("Q")
@@ -50,7 +47,7 @@ def listen(cs):
                     
                     cv2.destroyAllWindows()
 
-def sending_photos():
+def sending_video():
     while True:
         for client in client_socket:
             ret, photo = cap.read()
@@ -65,8 +62,8 @@ while True:
     print("Connection accepted for {}".format(addr))
     client_socket.add(client)
     print("client added")
-    receivt = threading.Thread(target=listen, args=(client,))
-    sendingt = threading.Thread(target=sending_photos)
+    receivt = threading.Thread(target=receiving_video, args=(client,))
+    sendingt = threading.Thread(target=sending_video)
     receivt.daemon = True
     sendingt.daemon = True
     receivt.start()
